@@ -2,12 +2,12 @@
 The first "bootloader" (launcher selector) for the Panic Playdate
 
 ## Installation Instructions
-1. Download os-download-x.x.x.py from the [releases](https://github.com/RintaDev5792/FunnyOS) page of FunnyOS
+1. Download os-download-x.x.x.py from the [releases](https://github.com/RintaDev5792/FunnyOS/releases) page of FunnyOS
 1. Run os-download and follow the instructions. After it is complete, you should have a .pdos and a .pdkey file in the same directory
 1. Rename the PlaydateOS.pdos file to a .zip and unzip it
 1. Go into the new folder and then /System, and create a folder named "Launchers" inside of it with that exact capitalisation
 1. Copy the default Launcher.pdx from /System to /System/Launchers and rename it to "StockLauncher.pdx"
-1. Copy your FunnyLauncher.pdx (available from the releases page of this repo) into /System (NOT /LAUNCHERS) and rename it to "Launcher.pdx"
+1. Copy your FunnyLauncher.pdx (available from the [releases](https://github.com/RintaDev5792/FunnyLoader/releases) page of this repo) into /System (NOT /LAUNCHERS) and rename it to "Launcher.pdx"
 1. Copy your .pdx files for all of the launchers you are using into /System/Launchers
 1. Name all of the .pdx files in /System/Launchers how you want them to show up in the FunnyLauncher list
 1. Re-zip the PlaydateOS folder, if on macos open a terminal in the folder (not in System, in the root) and run "zip -r ../PlaydateOS-Patched.zip ."
