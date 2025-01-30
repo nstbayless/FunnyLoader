@@ -19,9 +19,10 @@ The first "bootloader" (launcher selector) for the Panic Playdate
 If this at any point freezes or errors out during installation, especially multiple times in a row, you can (as a last resort) hold A+B+MENU+LOCK to enter recovery mode and flash stock OS. FunnyLauncher installations will just about always work when installing from stock OS.
 
 ## Usage Instructions
-Upon starting up your playdate for the first time after install, you will be greeted with a list of launchers that you put into the /Launchers directory earlier. If you do not see a list, you done fucked up. Redo installation.
-Use the UP and DOWN buttons on playdate to navigate the list. 
-Select the launcher you want to use as your default and click B while it is selected. This means that your playdate will automatically boot into that launcher from now on. 
-Press A to launch a launcher (lol). 
-To get back to the list of launchers, open any app where the "home" option is available from the system menu. Then undock your crank and point it away from you (perpendicular to the rest of the unit). Then navigate to the "home" option with the dpad and select it with A. You will now be in the FunnyLoader interface.
-If at any time you have an invalid default or are having other errors, hold LEFT+LOCK+MENU and plug your playdate into a computer. Then delete the /Shared/FunnyLoader folder on the playdate, this will reset your FunnyLoader to default.
+Upon starting up your playdate for the first time after install, you will be greeted with a list of launchers that you put into the /Launchers directory earlier. If you do not see a list, you done fucked up. Redo installation.  
+Use the UP and DOWN buttons on playdate to navigate the list.   
+Select the launcher you want to use as your default and click B while it is selected. This means that your playdate will automatically boot into that launcher from now on.   
+Press A to launch a launcher (lol).   
+To get back to the list of launchers, open any app where the "home" option is available from the system menu. Then undock your crank and point it away from you (perpendicular to the rest of the unit). Then navigate to the "home" option with the dpad and select it with A. You will now be in the FunnyLoader interface.  
+  
+If at any time you have an invalid default or are having other errors, hold LEFT+LOCK+MENU and plug your playdate into a computer. Then delete the /Shared/FunnyLoader folder on the playdate, this will reset your FunnyLoader to default.  
