@@ -88,6 +88,7 @@ function dirSetup()
 end
 
 function playdate.update()
+    playdate.timer.updateTimers()
 	playdate.resetElapsedTime()
 	if firstUpdate then
 		firstUpdate=false
@@ -105,7 +106,7 @@ function updateCursor()
         selected += 1
         drawSelection(selected)
     end
-    if playdate.buttonJustPressed(playdate.kButtonA) then
+    if playdate.buttonJustReleased(playdate.kButtonA) then
         print("FOUND OS PDX \""..launchers[selected]..",\" LAUNCHING.")
         playdate.system.switchToGame("/System/Launchers/"..launchers[selected])    
     end
