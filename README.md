@@ -25,4 +25,9 @@ If this at any point freezes or errors out during installation, especially multi
 - Press A to launch a launcher (lol).   
 - To get back to the list of launchers, open any app where the "home" option is available from the system menu. Then undock your crank and point it away from you (perpendicular to the rest of the unit). Then navigate to the "home" option with the dpad and select it with A. You will now be in the FunnyLoader interface.  
   
-- If at any time you have an invalid default or are having other errors, hold LEFT+LOCK+MENU and plug your playdate into a computer. Then delete the /Shared/FunnyLoader folder on the playdate, this will reset your FunnyLoader to default.  
+- If at any time you have an invalid default or are having other errors, hold LEFT+LOCK+MENU and plug your playdate into a computer. Then delete the /Shared/FunnyLoader folder on the playdate, this will reset your FunnyLoader to default.
+
+## List of Launchers for the Playdate
+- [FunnyOS](https://github.com/RintaDev5792/FunnyOS/)
+- [IndexOS](https://github.com/scratchminer/Index-OS/)
+- The stock launcher lol
