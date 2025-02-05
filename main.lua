@@ -94,6 +94,7 @@ function playdate.update()
 		firstUpdate=false
 		main()
 	end
+    
     updateCursor()
 end
 
@@ -107,14 +108,23 @@ function updateCursor()
         drawSelection(selected)
     end
     if playdate.buttonJustReleased(playdate.kButtonA) then
-        print("FOUND OS PDX \""..launchers[selected]..",\" LAUNCHING.")
-        playdate.system.switchToGame("/System/Launchers/"..launchers[selected])    
+        if launchers[selected] then
+            print("FOUND OS PDX \""..launchers[selected]..",\" LAUNCHING.")
+            playdate.system.switchToGame("/System/Launchers/"..launchers[selected])  
+        else
+            print("NO LAUNCHERS TO LAUNCH.")    
+        end  
     end
     if playdate.buttonJustPressed(playdate.kButtonB) then
-        print("FOUND OS PDX \""..launchers[selected]..",\" SETTING DEFAULT.")
-        config["default"] = launchers[selected]
-        saveConfig()
-        drawSelection(selected)
+        
+        if launchers[selected] then
+            print("FOUND OS PDX \""..launchers[selected]..",\" SETTING DEFAULT.")
+            config["default"] = launchers[selected]
+            saveConfig()
+            drawSelection(selected)
+        else
+            print("NO LAUNCHERS TO LAUNCH.")    
+        end  
     end
 end
 
