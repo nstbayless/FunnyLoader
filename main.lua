@@ -159,10 +159,24 @@ function boot()
             if fle.exists("/System/Launchers/"..v.."/icon.pdi") then
                 print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
                 icons[v] = gfx.image.new("/System/Launchers/"..v.."/icon.pdi")
-            end
-            if fle.exists("/System/Launchers/"..v.."/images/list_icon_default.pdi") then
+            elseif fle.exists("/System/Launchers/"..v.."/images/list_icon_default.pdi") then
                 print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
                 icons[v] = gfx.image.new("/System/Launchers/"..v.."/images/list_icon_default.pdi")
+            else
+                local f = fle.open("/System/Launchers/"..v.."/pdxinfo")   
+                local firstLine = f:readline()
+                if firstLine == "name=Index OS" then
+                    print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
+                    local img = gfx.image.new(32,32,gfx.kColorClear)
+                    gfx.lockFocus(img)
+                    gfx.setColor(gfx.kColorWhite)
+                    gfx.fillRoundRect(0, 0, 32, 32, 3)
+                    gfx.image.new("images/indexOS"):draw(0,0)
+                    gfx.unlockFocus()
+                    icons[v] = img
+                else
+                    print(firstLine:gsub("\n", "bsn"))    
+                end
             end
         end
     end
