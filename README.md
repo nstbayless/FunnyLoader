@@ -30,4 +30,5 @@ If this at any point freezes or errors out during installation, especially multi
 ## List of Launchers for the Playdate
 - [FunnyOS](https://github.com/RintaDev5792/FunnyOS/)
 - [IndexOS](https://github.com/scratchminer/Index-OS/)
+- [YapOS](https://github.com/CrossScarDev/yapOS) 
 - The stock launcher lol
