@@ -110,7 +110,7 @@ function updateCursor()
     if playdate.buttonJustReleased(playdate.kButtonA) then
         if launchers[selected] then
             print("FOUND OS PDX \""..launchers[selected]..",\" LAUNCHING.")
-            playdate.system.switchToGame("/System/Launchers/"..launchers[selected])  
+            playdate.system.switchToGame("/System/Launchers/"..launchers[selected], "FunnyLoader")  
         else
             print("NO LAUNCHERS TO LAUNCH.")    
         end  
@@ -136,7 +136,7 @@ function boot()
         else
             if fle.exists("/System/Launchers/"..config["default"]) then
                 print("FOUND DEFAULT OS PDX \""..config["default"]..",\" LAUNCHING.")
-                playdate.system.switchToGame("/System/Launchers/"..config["default"])
+                playdate.system.switchToGame("/System/Launchers/"..config["default"], "FunnyLoader")
                 return
             else
                 print("INVALID DEFAULT OS PDX \""..config["default"]..",\" RESETTING DEFAULT VALUE.")    
