@@ -133,6 +133,8 @@ function boot()
     if (config["default"] ~= "") then -- load default os
         if  (not playdate.isCrankDocked()) and playdate.getCrankPosition() > 45 and playdate.getCrankPosition() < 135 then 
             print("CRANK POSITIONED FOR BOOTLOADER, SKIPPING DEFAULT")
+	elseif playdate.argv[1] == "nodefault" then
+	    print("NODEFAULT FLAG PASSED, SKIPPING DEFAULT")
         else
             if fle.exists("/System/Launchers/"..config["default"]) then
                 print("FOUND DEFAULT OS PDX \""..config["default"]..",\" LAUNCHING.")
