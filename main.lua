@@ -179,6 +179,35 @@ function boot()
                 else
                     print(firstLine:gsub("\n", "bsn"))    
                 end
+                
+                -- check for launcher assets directory in pdxinfo
+                local line = firstLine
+                local imagePathField = "imagePath="
+                while line do
+                    if line:sub(1, #imagePathField) == imagePathField then
+                        local imagePath = line:sub(#imagePathField+1)
+                        
+                        -- remove trailing '/'
+                        if imagePath:sub(-1) == "/" then
+                            imagePath = imagePath:sub(1, -2)
+                        end
+                        
+                        if fle.exists("/System/Launchers/"..v.."/"..imagePath.."/list_icon_default.pdi") then
+                            if not icons[v] then -- only use this icon if no other icon is provided
+                                print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
+                                icons[v] = gfx.image.new("/System/Launchers/"..v.."/"..imagePath.."/list_icon_default.pdi")
+                            end
+                        end
+                        
+                        if fle.exists("/System/Launchers/"..v.."/"..imagePath.."/icon.pdi") then
+                            if not icons[v] then -- only use this icon if no other icon is provided
+                                print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
+                                icons[v] = gfx.image.new("/System/Launchers/"..v.."/"..imagePath.."/icon.pdi")
+                            end
+                        end
+                    end
+                    line = f:readline()
+                end
             end
         end
     end
