@@ -15,15 +15,20 @@ firstUpdate = true
 datastore_path = "/Shared/FunnyLoader/funnyLoaderConfig"
 default_config = {
     default = "",
+    launchers = {}
 }
 config = default_config
 
 launchers = {}
 icons = {}
 selected = 1
+local isRearranging = false
 
 function saveConfig()
     print("SAVED CONFIG \""..datastore_path..".\"")
+    for i=1,#launchers do
+        config["launcher" .. tostring(i)] = launchers[i]
+    end
     playdate.datastore.write(config,datastore_path)
 end
 
@@ -98,34 +103,78 @@ function playdate.update()
     updateCursor()
 end
 
+function swap(list, i, j)
+    local v = list[i]
+    list[i] = list[j]
+    list[j] = v
+end
+
 function updateCursor()
+    local isHeld = playdate.buttonIsPressed(playdate.kButtonA)
     if playdate.buttonJustPressed(playdate.kButtonUp) and selected > 1 then
+        if isHeld then
+            isRearranging = true
+            swap(launchers, selected, selected-1)
+            saveConfig()
+        end
         selected -= 1
         drawSelection(selected)
     end
     if playdate.buttonJustPressed(playdate.kButtonDown) and selected < #launchers then
+        if isHeld then
+            isRearranging = true
+            swap(launchers, selected, selected+1)
+            saveConfig()
+        end
         selected += 1
         drawSelection(selected)
     end
     if playdate.buttonJustReleased(playdate.kButtonA) then
-        if launchers[selected] then
-            print("FOUND OS PDX \""..launchers[selected]..",\" LAUNCHING.")
-            playdate.system.switchToGame("/System/Launchers/"..launchers[selected], "FunnyLoader")  
+        if isRearranging then
+            isRearranging = false
         else
-            print("NO LAUNCHERS TO LAUNCH.")    
-        end  
+            if launchers[selected] then
+                print("FOUND OS PDX \""..launchers[selected]..",\" LAUNCHING.")
+                playdate.system.switchToGame("/System/Launchers/"..launchers[selected], "FunnyLoader")
+            else
+                print("NO LAUNCHERS TO LAUNCH.")    
+            end
+        end
     end
     if playdate.buttonJustPressed(playdate.kButtonB) then
         
         if launchers[selected] then
-            print("FOUND OS PDX \""..launchers[selected]..",\" SETTING DEFAULT.")
-            config["default"] = launchers[selected]
-            saveConfig()
+            if launchers[selected] == config["default"] then
+                print("REMOVING DEFAULT")
+                config["default"] = ""
+                saveConfig()
+            else
+                print("FOUND OS PDX \""..launchers[selected]..",\" SETTING DEFAULT.")
+                config["default"] = launchers[selected]
+                saveConfig()
+            end
             drawSelection(selected)
         else
             print("NO LAUNCHERS TO LAUNCH.")    
         end  
     end
+end
+
+function pdex_exists(pdx_path)
+    if playdate.isSimulator then
+        return fle.exists(pdx_path .. "/pdex.so") or fle.exists(pdx_path .. "/pdex.dylib") or fle.exists(pdx_path .. "/pdex.dll")
+    else
+        return fle.exists(pdx_path .. "/pdex.bin")
+    end
+end
+
+function valueExists(table, v)
+    for i, x in pairs(table) do
+        if x == v then
+            return true
+        end
+    end
+    return false
 end
 
 function boot()
@@ -136,7 +185,7 @@ function boot()
 	elseif playdate.argv[1] == "nodefault" then
 	    print("NODEFAULT FLAG PASSED, SKIPPING DEFAULT")
         else
-            if fle.exists("/System/Launchers/"..config["default"]) then
+            if fle.exists("/System/Launchers/"..config["default"]) and (pdex_exists("/System/Launchers/"..config["default"]) or fle.exists("/System/Launchers/"..config["default"] .. "/main.pdz")) then
                 print("FOUND DEFAULT OS PDX \""..config["default"]..",\" LAUNCHING.")
                 playdate.system.switchToGame("/System/Launchers/"..config["default"], "FunnyLoader")
                 return
@@ -150,12 +199,22 @@ function boot()
         print("NO DEFAULT OS PDX, CONTINUING TO BOOT SELECTION.")
     end
     selected = 1
+    local ci = 1
+    while true do
+        local key = "launcher" .. tostring(ci)
+        if config and config[key] then
+            launchers[ci] = config[key]
+        else
+            break
+        end
+        ci = ci + 1
+    end
     local files = fle.listFiles("/System/Launchers")
     print("FOUND LAUNCHER .PDX FILES: ")
     for i,v in ipairs(files) do
         v = v:sub(1,#v-1)
         files[i] = v
-        if string.lower(v:sub(#v-3,#v)) == ".pdx" then
+        if string.lower(v:sub(#v-3,#v)) == ".pdx" and not valueExists(launchers, v) then
             print("- "..string.upper(v))
             table.insert(launchers,v)
             if fle.exists("/System/Launchers/"..v.."/icon.pdi") then
@@ -186,6 +245,9 @@ function boot()
 end
 
 function drawSelection(index) 
+    
+    print("draw selection")
+    
     local rowheight = 34
     local default_yoffset = 8
     local yoffset = rowheight*(index-6) + default_yoffset
@@ -213,7 +275,12 @@ function drawSelection(index)
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(0, 240-24, 400, 24)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-    gfx.getUIFont():drawText("Ⓐ Launch                                         Set as Default Ⓑ", 5, 218)
+    gfx.getUIFont():drawText("Ⓐ Launch, (Hold) Rearrange", 3, 218, 394, 30, 0, playdate.graphics.kAlignLeft)
+    local setDefaultText = "Ⓑ Set Default"
+    if config["default"] == launchers[selected] then
+        setDefaultText = "Ⓑ Unset"
+    end
+    gfx.getUIFont():drawText(setDefaultText, 3, 218, 394, 30, 0, playdate.graphics.kAlignRight)
 end
 
 function main()
