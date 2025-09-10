@@ -177,6 +177,60 @@ function valueExists(table, v)
     return false
 end
 
+function loadIcon(v)
+    if fle.exists("/System/Launchers/"..v.."/icon.pdi") then
+        print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
+        icons[v] = gfx.image.new("/System/Launchers/"..v.."/icon.pdi")
+    elseif fle.exists("/System/Launchers/"..v.."/images/list_icon_default.pdi") then
+        print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
+        icons[v] = gfx.image.new("/System/Launchers/"..v.."/images/list_icon_default.pdi")
+    else
+        local f = fle.open("/System/Launchers/"..v.."/pdxinfo")   
+        local firstLine = f:readline()
+        if firstLine == "name=Index OS" then
+            print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
+            local img = gfx.image.new(32,32,gfx.kColorClear)
+            gfx.lockFocus(img)
+            gfx.setColor(gfx.kColorWhite)
+            gfx.fillRoundRect(0, 0, 32, 32, 3)
+            gfx.image.new("images/indexOS"):draw(0,0)
+            gfx.unlockFocus()
+            icons[v] = img
+        else
+            print(firstLine:gsub("\n", "bsn"))    
+        end
+        
+        -- check for launcher assets directory in pdxinfo
+        local line = firstLine
+        local imagePathField = "imagePath="
+        while line do
+            if line:sub(1, #imagePathField) == imagePathField then
+                local imagePath = line:sub(#imagePathField+1)
+                
+                -- remove trailing '/'
+                if imagePath:sub(-1) == "/" then
+                    imagePath = imagePath:sub(1, -2)
+                end
+                
+                if fle.exists("/System/Launchers/"..v.."/"..imagePath.."/list_icon_default.pdi") then
+                    if not icons[v] then -- only use this icon if no other icon is provided
+                        print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
+                        icons[v] = gfx.image.new("/System/Launchers/"..v.."/"..imagePath.."/list_icon_default.pdi")
+                    end
+                end
+                
+                if fle.exists("/System/Launchers/"..v.."/"..imagePath.."/icon.pdi") then
+                    if not icons[v] then -- only use this icon if no other icon is provided
+                        print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
+                        icons[v] = gfx.image.new("/System/Launchers/"..v.."/"..imagePath.."/icon.pdi")
+                    end
+                end
+            end
+            line = f:readline()
+        end
+    end
+end
+
 function boot()
     -- if not holding bootloader combo and a default is set then go to default
     if (config["default"] ~= "") then -- load default os
@@ -219,57 +273,6 @@ function boot()
         if string.lower(v:sub(#v-3,#v)) == ".pdx" and not valueExists(launchers, v) then
             print("- "..string.upper(v))
             table.insert(launchers,v)
-            if fle.exists("/System/Launchers/"..v.."/icon.pdi") then
-                print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
-                icons[v] = gfx.image.new("/System/Launchers/"..v.."/icon.pdi")
-            elseif fle.exists("/System/Launchers/"..v.."/images/list_icon_default.pdi") then
-                print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
-                icons[v] = gfx.image.new("/System/Launchers/"..v.."/images/list_icon_default.pdi")
-            else
-                local f = fle.open("/System/Launchers/"..v.."/pdxinfo")   
-                local firstLine = f:readline()
-                if firstLine == "name=Index OS" then
-                    print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
-                    local img = gfx.image.new(32,32,gfx.kColorClear)
-                    gfx.lockFocus(img)
-                    gfx.setColor(gfx.kColorWhite)
-                    gfx.fillRoundRect(0, 0, 32, 32, 3)
-                    gfx.image.new("images/indexOS"):draw(0,0)
-                    gfx.unlockFocus()
-                    icons[v] = img
-                else
-                    print(firstLine:gsub("\n", "bsn"))    
-                end
-                
-                -- check for launcher assets directory in pdxinfo
-                local line = firstLine
-                local imagePathField = "imagePath="
-                while line do
-                    if line:sub(1, #imagePathField) == imagePathField then
-                        local imagePath = line:sub(#imagePathField+1)
-                        
-                        -- remove trailing '/'
-                        if imagePath:sub(-1) == "/" then
-                            imagePath = imagePath:sub(1, -2)
-                        end
-                        
-                        if fle.exists("/System/Launchers/"..v.."/"..imagePath.."/list_icon_default.pdi") then
-                            if not icons[v] then -- only use this icon if no other icon is provided
-                                print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
-                                icons[v] = gfx.image.new("/System/Launchers/"..v.."/"..imagePath.."/list_icon_default.pdi")
-                            end
-                        end
-                        
-                        if fle.exists("/System/Launchers/"..v.."/"..imagePath.."/icon.pdi") then
-                            if not icons[v] then -- only use this icon if no other icon is provided
-                                print("- - ".."FOUND ICON FOR \""..v..",\" LOADED.")
-                                icons[v] = gfx.image.new("/System/Launchers/"..v.."/"..imagePath.."/icon.pdi")
-                            end
-                        end
-                    end
-                    line = f:readline()
-                end
-            end
         end
     end
     
@@ -290,6 +293,10 @@ function boot()
                 break
             end
         end
+    end
+    
+    for i,v in ipairs(launchers) do
+        loadIcon(v)
     end
     
     drawSelection(selected)
