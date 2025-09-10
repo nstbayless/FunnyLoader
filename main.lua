@@ -211,9 +211,11 @@ function boot()
     end
     local files = fle.listFiles("/System/Launchers")
     print("FOUND LAUNCHER .PDX FILES: ")
+    local found = {}
     for i,v in ipairs(files) do
         v = v:sub(1,#v-1)
         files[i] = v
+        found[v] = true
         if string.lower(v:sub(#v-3,#v)) == ".pdx" and not valueExists(launchers, v) then
             print("- "..string.upper(v))
             table.insert(launchers,v)
@@ -241,6 +243,26 @@ function boot()
             end
         end
     end
+    
+    local unfound = {}
+    for i,v in ipairs(launchers) do
+        if not found[v] then
+            print("unfound: " .. v)
+            unfound[#unfound+1] = v
+        end
+    end
+    
+    -- remove any launchers not found
+    for i,v in ipairs(unfound) do
+        for j,v2 in ipairs(launchers) do
+            if v2 == v then
+                print("removing " .. v)
+                table.remove(launchers, j)
+                break
+            end
+        end
+    end
+    
     drawSelection(selected)
 end
 
